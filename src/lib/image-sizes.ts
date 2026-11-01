@@ -1,0 +1,26 @@
+// Generated from public/img: file name with intrinsic size, so next/image reserves space (no layout shift).
+export const IMAGE_SIZES = {
+  "bed-wood": { w: 736, h: 981 },
+  "bed": { w: 736, h: 736 },
+  "bench": { w: 1086, h: 1448 },
+  "chair-bentwood": { w: 960, h: 1280 },
+  "chair-red": { w: 1080, h: 1375 },
+  "chair-wishbone": { w: 1125, h: 1500 },
+  "conference-black": { w: 736, h: 736 },
+  "conference-white": { w: 1280, h: 577 },
+  "delivery-truck": { w: 688, h: 1500 },
+  "desk-white": { w: 1500, h: 1125 },
+  "executive-desk-grey": { w: 1260, h: 1224 },
+  "hero-desk": { w: 1800, h: 977 },
+  "marble-table": { w: 1500, h: 844 },
+  "steel-frame-workshop": { w: 1500, h: 1125 },
+  "steel-shelf-workshop": { w: 1125, h: 1500 },
+  "stool-cushion": { w: 1125, h: 1500 },
+  "stools-red": { w: 1000, h: 1499 },
+  "table-frame": { w: 1500, h: 1125 },
+  "workstation-grey": { w: 1500, h: 999 },
+  "workstation-long": { w: 1500, h: 999 },
+  "workstation-wood": { w: 1125, h: 1500 },
+  "xleg-table": { w: 897, h: 831 },
+} as const;
+export type ImageKey = keyof typeof IMAGE_SIZES;

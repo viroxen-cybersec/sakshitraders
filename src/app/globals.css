@@ -1,0 +1,219 @@
+@import "tailwindcss";
+
+/*
+  Design tokens. Names follow the shadcn convention (background, foreground, border)
+  because 21st.dev components expect them.
+  Palette from the products: powder-coat black, brushed brass hardware, warm bone paper.
+*/
+:root {
+  --background: #0f1012;
+  --foreground: #edebe5;
+  --border: #2a2c30;
+  --muted: #9ea1a7;
+  --brass: #c9a062;
+  --brass-ink: #17130c;
+  --panel: #16171a;
+  --card: #1a1b1f;
+  --wa: #25d366;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-brass: var(--brass);
+  --color-brass-ink: var(--brass-ink);
+  --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-wa: var(--wa);
+  --font-sans: var(--font-archivo), "Arial Narrow", Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Wide, heavy headings: steel nameplate feel. */
+@utility heading {
+  font-stretch: 118%;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+@keyframes reveal {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@utility animate-reveal {
+  animation: reveal 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@utility animate-pulse-ring {
+  animation: pulse-ring 2.4s ease-out infinite;
+}
+
+:focus-visible {
+  outline: 3px solid var(--brass);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--brass);
+  color: var(--brass-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Motion ----------
+   One opening sequence: headline cuts in, photo wipes open, tags appear one by one.
+   After that, motion only answers scrolling or pointer. All of it stops for reduced-motion users (rule above). */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-copy {
+  animation: fade-up 0.8s 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Product tags on the hero photo */
+.pin-in {
+  animation: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(1.5s + var(--i, 0) * 0.35s);
+}
+
+/* Catalogue cards rise in, and again whenever the filter changes */
+.card-in {
+  animation: fade-up 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+/* Scroll reveal, driven by RevealObserver. Without JS nothing is hidden. */
+[data-reveal] {
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+}
+[data-reveal="pre"] {
+  opacity: 0;
+  transform: translateY(26px);
+}
+
+/* Brass light that follows the pointer over catalogue photos */
+.spotlight {
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(201, 160, 98, 0.32), transparent 70%);
+  mix-blend-mode: screen;
+}
+
+/* Strip of product names */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-inner {
+  animation: marquee 46s linear infinite;
+}
+.marquee:hover .marquee-inner {
+  animation-play-state: paused;
+}
+.marquee-word {
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--foreground) 55%, transparent);
+  transition: color 0.3s;
+}
+.marquee-word:hover {
+  color: var(--foreground);
+}
+
+.lightbox {
+  animation: fade-in 0.25s ease-out both;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Thin brass line across the top that fills as you scroll (Chromium and Safari 26+; elsewhere it stays hidden). */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 3px;
+  background: var(--brass);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    animation: progress linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes progress {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* The hero photo drifts slowly against the page as it passes. */
+  .hero-img {
+    animation: drift linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+  @keyframes drift {
+    from {
+      transform: scale(1.1) translateY(-4%);
+    }
+    to {
+      transform: scale(1) translateY(3%);
+    }
+  }
+}
